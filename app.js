@@ -34,7 +34,7 @@ app.use(session({
 }));
 
 //set up passport
-passport.use(new Strategy(
+passport.use(new LocalStrategy(
   function(username, password, cb) {
     Mongo.User.find({username: username}, function(err, user) {
       if (err) { return cb(err); }
@@ -67,12 +67,41 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
+
+
+
+
+
+
+
+
+
+app.post('/login',
+  passport.authenticate('local', { failureRedirect: '/login.html' }),
+  function(req, res) {
+    res.redirect('/');
+  });
+
+app.get('/logout',
+  function(req, res){
+    req.logout();
+    res.redirect('/');
+  });
+
+
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
+
+
+
+
+
+
+
 
 /// error handlers
 

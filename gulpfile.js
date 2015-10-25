@@ -2,7 +2,8 @@ var gulp = require('gulp'),
   nodemon = require('gulp-nodemon'),
   plumber = require('gulp-plumber'),
   livereload = require('gulp-livereload'),
-  sass = require('gulp-sass');
+  sass = require('gulp-sass'),
+  shell = require('gulp-shell');
 
 gulp.task('sass', function () {
   gulp.src('./app/client/scss/*.scss')
@@ -24,6 +25,14 @@ gulp.task('htmlMove', function () {
 
 gulp.task('htmlwatch', function() {
   gulp.watch('./public/client/*.html', ['htmlMove']);
+});
+
+gulp.task('browserify', shell.task([
+  'browserify ./app/client/js/script.js -o ./output/js/script.js',
+]));
+
+gulp.task('jswatch', function() {
+  gulp.watch('./public/client/js/*.js', ['browserify']);
 });
 
 gulp.task('develop', function () {
@@ -48,5 +57,7 @@ gulp.task('default', [
   'develop',
   'sasswatch',
   'htmlMove',
-  'htmlwatch'
+  'htmlwatch',
+  'browserify',
+  'jswatch'
 ]);
