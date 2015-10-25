@@ -22,6 +22,8 @@ var Mongo = require('./mongo');
 var MongoStore = require('connect-mongo')(session);
 var MSoptions = {mongooseConnection: Mongo.mongoose.connection};
 
+var bcrypt = require('bcrypt-nodejs');
+console.log(bcrypt);
 
 //set up sessions
 app.use(cookieParser());
@@ -39,7 +41,10 @@ passport.use(new LocalStrategy(
     Mongo.User.findOne({username: username}, function(err, user) {
       if (err) { return cb(err); }
       if (!user) { return cb(null, false); }
-      if (user.password != password) { return cb(null, false); }
+      if (!bcrypt.compareSync(password, user.password)) {
+          return cb(null, false);
+      }
+      //if (user.password != password) { return cb(null, false); }
       return cb(null, user);
     });
   }));
@@ -81,6 +86,7 @@ app.post('/signup',function(req, res){
 
     if (username && password){
         Mongo.userExists(username, function(){
+            password = bcrypt.hashSync(password);
             Mongo.User.create({username: username, password: password});
             res.redirect('/login.html');
         }, function(err){
