@@ -80,12 +80,33 @@ app.post('/signup',function(req, res){
     var password = req.body.password;
 
     if (username && password){
-        Mongo.User.create({username: username, password: password});
-        res.redirect('/login.html');
+        Mongo.userExists(username, function(){
+            Mongo.User.create({username: username, password: password});
+            res.redirect('/login.html');
+        }, function(err){
+            if (err === true){
+                res.send("Username already exists");
+            } else {
+                res.send('an unknown error occured');
+            }
+        });
     } else {
-        res.send('Error Creating Account');
+        res.send('Username and password must both be supplied');
     }
 
+});
+
+app.get('/user/exists/:username', function(req, res){
+    var username = req.params.username;
+    if (username){
+        Mongo.userExists(username, function(){
+            res.send({exists: false});
+        }, function(err){
+            res.send({exists: true});
+        });
+    } else {
+        res.send('malformed query url');
+    }
 });
 
 app.post('/login',

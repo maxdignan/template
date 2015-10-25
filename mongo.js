@@ -35,9 +35,24 @@ var UserSchema = new Schema({
 
 var User = mongoose.model('User', UserSchema);
 
+function userExists(username, goodCallBack, errCallBack) {
+    User.find({username: username}, function(err, docs){
+        if (err){
+            errCallBack(err);
+        } else {
+            if (docs.length === 0){
+                goodCallBack();
+            } else {
+                errCallBack(true);
+            }
+        }
+    });
+}
+
 
 module.exports = {
     Task: Task,
     User: User,
+    userExists: userExists,
     mongoose: mongoose
 };
