@@ -94,11 +94,19 @@ app.post('/login',
     res.redirect('/success');
   });
 
+app.get('/login', function(req, res){
+      res.sendFile(__dirname + '/output/login.html');
+  });
+
   app.get('/success',
   ensureLoggedIn('/login'),
   function(req, res) {
     res.send(req.user);
   });
+
+app.get('/checklist', ensureLoggedIn('/login'), function(req, res){
+    res.sendFile(__dirname + '/output/checklist.html');
+});
 
 app.get('/logout',
   function(req, res){
