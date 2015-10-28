@@ -188,3 +188,5 @@ module.exports = app;
 
 //GET THE APP TO listen
 require('./bin/www');
+
+require('./ioFile')();

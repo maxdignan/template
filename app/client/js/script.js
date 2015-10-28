@@ -1,4 +1,6 @@
 (function() {
+
+
     var nav = document.getElementById('nav');
     document.getElementById('openButton').addEventListener('click', function(e) {
         nav.classList.add('open');
