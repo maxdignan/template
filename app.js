@@ -187,7 +187,7 @@ app.use(function(req, res, next) {
 module.exports = app;
 
 //GET THE APP TO listen
-require('./bin/www');
+var server = require('./bin/www');
 
 //connect socket io
-//require('./ioFile')();
+require('./ioFile')(server);
